@@ -1,0 +1,17 @@
+# Python cache files - Python creates these when running your code
+__pycache__/
+*.pyc
+
+# Environment variables and sensitive data - NEVER commit these
+.env
+.env.*
+!.env.example
+config/keys.py
+
+# Log files - Generated when your bot runs, can be large
+logs/*.log
+logs/*.jsonl
+logs/portfolio_history.json
+logs/portfolio_history.csv
+logs/trade_history.json
+logs/trade_history.csv

@@ -1,0 +1,24 @@
+# Core Dependencies
+# API and HTTP
+requests>=2.31.0
+
+# Binance API SDK (optional - the code uses direct REST API)
+# python-binance>=1.0.17
+
+# Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Dashboard and Visualization
+dash>=2.14.0
+plotly>=5.18.0
+
+# Configuration and Environment
+python-dotenv>=1.0.0
+
+# Development and Testing (Optional)
+# pytest>=7.4.0
+
+# Note: Standard library modules (don't need to install):
+# - logging, json, time, datetime, threading, pathlib, sys, os
+# - hashlib, hmac, enum, dataclasses, typing, urllib
