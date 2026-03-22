@@ -149,7 +149,10 @@ class GridStrategy:
         # 5. GRID ADDITION & REVERSAL
         else:
             spacing = ml_volatility if ml_volatility > 0 else 1.5 
-            price_gap_pct = (self.price_gap / self.last_trade_price) * 100 * self.current_direction.value
+            if self.last_trade_price == 0:
+                price_gap_pct = 0.0
+            else:
+                price_gap_pct = (self.price_gap / self.last_trade_price) * 100 * self.current_direction.value
 
             if price_gap_pct >= spacing:
                 return {'action': 'OPEN_POSITION', 'direction': self.current_direction.name, 'price': current_price, 'quantity': self.calculate_next_lot_size(), 'reason': 'Grid extension'}
