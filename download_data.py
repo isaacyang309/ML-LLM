@@ -1,60 +1,53 @@
 import requests
 import pandas as pd
 import time
-import os
 
-def download_deep_history(symbol="BTCUSDT", interval="15m", total_limit=5000):
+def download_specific_range(symbol="BTCUSDT", interval="15m"):
     url = "https://api.binance.com/api/v3/klines"
     all_klines = []
     
-    # Calculate start time: Exactly 2 years ago from right now
-    # (2 years * 365 days * 24 hours * 60 mins * 60 secs * 1000 ms)
-    start_time_ms = int(time.time() )
-    current_start = start_time_ms
+    # Precise timestamps in milliseconds (Jan 1, 2023 to June 30, 2024)
+    start_time = 1672531200000  
+    end_time = 1719705600000    
+    
+    current_start = start_time
+    print(f"📡 Downloading {symbol} {interval} data from Jan 2023 to June 2024...")
 
-    print(f"📡 Downloading {total_limit} candles")
-    print(f"⏳ This will take approximately {total_limit//1000} API calls.")
-
-    while len(all_klines) < total_limit:
+    while current_start < end_time:
         params = {
             'symbol': symbol,
             'interval': interval,
             'limit': 1000,
-            'startTime': current_start
+            'startTime': current_start,
+            'endTime': end_time
         }
         
-        try:
-            response = requests.get(url, params=params)
-            data = response.json()
+        response = requests.get(url, params=params)
+        data = response.json()
 
-            if not data or len(data) == 0:
-                print("⚠️ No more data found for this range.")
-                break
-
-            all_klines.extend(data)
-            
-            # Update start time to the timestamp of the last candle + 1ms
-            current_start = data[-1][0] + 1
-            
-            print(f"   Progress: {len(all_klines)}/{total_limit} sticks collected...")
-            
-            # Small delay to avoid Binance rate limits (IP Ban protection)
-            time.sleep(0.1) 
-            
-        except Exception as e:
-            print(f"❌ Connection Error: {e}")
+        if not data or len(data) == 0:
             break
 
-    # Save exactly what was requested
-    df = pd.DataFrame(all_klines[:total_limit], columns=[
+        all_klines.extend(data)
+        current_start = data[-1][0] + 1
+        
+        print(f"   Collected {len(all_klines)} candles...")
+        time.sleep(0.1) # Rate limit protection
+
+    df = pd.DataFrame(all_klines, columns=[
         'timestamp', 'open', 'high', 'low', 'close', 'volume', 
         'close_time', 'qav', 'num_trades', 'taker_base_vol', 
         'taker_quote_vol', 'ignore'
     ])
 
-    file_name = f"{symbol}_40000_DEEP_DATA.csv"
+    # Convert timestamp to readable format like your snippet
+    df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+
+    file_name = f"{symbol}_2023_2024_June_15m.csv"
     df.to_csv(file_name, index=False)
-    print(f"\n✅ SUCCESS! File saved as: {file_name}")
+    print(f"✅ SUCCESS! Saved to {file_name}\n")
 
 if __name__ == "__main__":
-    download_deep_history()
+    # Download both assets for the multi-pair bot
+    download_specific_range("BTCUSDT")
+    download_specific_range("ETHUSDT")

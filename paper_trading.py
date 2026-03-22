@@ -20,7 +20,7 @@ def run_paper_trading():
     print("AI PAPER TRADING MODE: ACTIVATED")
     print("="*80)
     print("Strategy: Adaptive Grid")
-    print("Brain 1: XGBoost Classifier (27% Accuracy)")
+    print("Brain 1: XGBoost Classifier")
     print("Brain 2: FinBERT Sentiment (Live News)")
     print("="*80 + "\n")
 
